@@ -15,21 +15,20 @@ from data.updframe import UpdateFrame
 from debug         import logMsg, debug
 from parse         import parse
 
-from rpython.rlib.jit import purefunction
+from rpython.rlib  import jit
 
 EvalOp      = 0
 EnterOp     = 1
 ReturnConOp = 2
 ReturnIntOp = 3
 
-@purefunction
+@jit.unroll_safe
 def vals(env, global_env, k):
   logMsg("Vals with ", str(k))
   if k == []:
     return []
   return [val(env, global_env, v) for v in k] # map(lambda v : val(env, global_env, v), k)
 
-@purefunction
 def val(env, global_env, k):
   logMsg("Val with ", str(k))
   res = k
@@ -53,7 +52,6 @@ def val(env, global_env, k):
   assert isinstance(res,ast.ast.ValAST)
   return res 
 
-@purefunction
 def lookup_op(op):
   if (op == EvalOp):
     return "Eval"
